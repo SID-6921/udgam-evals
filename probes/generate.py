@@ -88,7 +88,7 @@ def g_units(rng, lvl):
     if lvl == 1:
         h = rng.randint(2, 12); q = f"How many {small} are in {h} {big}?"; ans = h * f
     elif lvl == 2:
-        h = rng.randint(2, 12) + 0.5; q = f"How many {small} are in {h} {big}?"; ans = int(h * f)
+        h = rng.randint(2, 12) + 0.5; q = f"How many {small} are in {h} {big}?"; ans = int(round(h * f))
     else:
         h = round(rng.randint(2, 30) + rng.randint(1, 9) / 10, 1)
         q = f"How many {small} are in {h} {big}?"; ans = int(round(h * f))
