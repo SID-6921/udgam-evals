@@ -87,11 +87,18 @@ def g_units(rng, lvl):
     small, big, f = rng.choice(UNITS)
     if lvl == 1:
         h = rng.randint(2, 12); q = f"How many {small} are in {h} {big}?"; ans = h * f
-    elif lvl == 2:
-        h = rng.randint(2, 12) + 0.5; q = f"How many {small} are in {h} {big}?"; ans = int(round(h * f))
     else:
-        h = round(rng.randint(2, 30) + rng.randint(1, 9) / 10, 1)
-        q = f"How many {small} are in {h} {big}?"; ans = int(round(h * f))
+        # A fractional h only gives a whole answer when its fractional part's
+        # denominator divides f; days/weeks (f=7) has no such denominator among
+        # these candidates, so it falls back to an integer h like level 1.
+        denoms = [d for d in (2, 3, 4, 5, 6, 8, 10, 12) if f % d == 0]
+        denom = 2 if lvl == 2 and 2 in denoms else (rng.choice(denoms) if lvl == 3 and denoms else None)
+        if denom is None:
+            h = rng.randint(2, 12)
+        else:
+            whole = rng.randint(2, 12) if lvl == 2 else rng.randint(2, 30)
+            h = whole + rng.randint(1, denom - 1) / denom
+        q = f"How many {small} are in {h} {big}?"; ans = round(h * f)
     return f"Question: {q}\nAnswer:", fmt(ans), [fmt(int(x)) for x in num_distractors(rng, ans)]
 
 
